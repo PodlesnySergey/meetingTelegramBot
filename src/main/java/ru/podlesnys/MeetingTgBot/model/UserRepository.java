@@ -1,4 +1,4 @@
-package io.proj3ct.SpringDemoBot.model;
+package ru.podlesnys.MeetingTgBot.model;
 
 import org.springframework.data.repository.CrudRepository;
 

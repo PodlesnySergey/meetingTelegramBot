@@ -1,4 +1,4 @@
-package io.proj3ct.SpringDemoBot;
+package ru.podlesnys.MeetingTgBot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,12 +1,12 @@
-package io.proj3ct.SpringDemoBot.service;
+package ru.podlesnys.MeetingTgBot.service;
 
 
 import com.vdurmont.emoji.EmojiParser;
-import io.proj3ct.SpringDemoBot.config.BotConfig;
-import io.proj3ct.SpringDemoBot.model.Ads;
-import io.proj3ct.SpringDemoBot.model.AdsRepository;
-import io.proj3ct.SpringDemoBot.model.User;
-import io.proj3ct.SpringDemoBot.model.UserRepository;
+import ru.podlesnys.MeetingTgBot.config.BotConfig;
+import ru.podlesnys.MeetingTgBot.model.Ads;
+import ru.podlesnys.MeetingTgBot.model.AdsRepository;
+import ru.podlesnys.MeetingTgBot.model.User;
+import ru.podlesnys.MeetingTgBot.model.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

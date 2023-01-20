@@ -1,6 +1,6 @@
-package io.proj3ct.SpringDemoBot.config;
+package ru.podlesnys.MeetingTgBot.config;
 
-import io.proj3ct.SpringDemoBot.service.TelegramBot;
+import ru.podlesnys.MeetingTgBot.service.TelegramBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;

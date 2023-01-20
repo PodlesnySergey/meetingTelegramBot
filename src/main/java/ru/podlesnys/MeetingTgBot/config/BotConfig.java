@@ -1,4 +1,4 @@
-package io.proj3ct.SpringDemoBot.config;
+package ru.podlesnys.MeetingTgBot.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
