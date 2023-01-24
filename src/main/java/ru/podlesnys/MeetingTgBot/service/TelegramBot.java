@@ -20,9 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.Timestamp;
@@ -45,8 +43,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             "Type /mydata to see data stored about yourself\n\n" +
             "Type /help to see this message again";
 
-    static final String YES_BUTTON = "YES_BUTTON";
-    static final String NO_BUTTON = "NO_BUTTON";
+    static final String YES_BUTTON_REG = "YES_BUTTON";
+    static final String NO_BUTTON_REG = "NO_BUTTON";
 
     static final String ERROR_TEXT = "Error occurred: ";
 
@@ -94,25 +92,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 switch (messageText) {
                     case "/start":
-
-                        registerUser(update.getMessage());
+//                        registerUser(update.getMessage());
                         startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
                         break;
-
                     case "/help":
-
                         prepareAndSendMessage(chatId, HELP_TEXT);
                         break;
-
                     case "/register":
-
                         register(chatId);
+//                        registerUser(update.getMessage());
+
                         break;
-
                     default:
-
                         prepareAndSendMessage(chatId, "Sorry, command was not recognized");
-
                 }
             }
         } else if (update.hasCallbackQuery()) {
@@ -120,12 +112,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             long messageId = update.getCallbackQuery().getMessage().getMessageId();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
 
-            if(callbackData.equals(YES_BUTTON)){
-                String text = "You pressed YES button";
+            if(callbackData.equals(YES_BUTTON_REG)){
+                String text = "Your registration is started.";
                 executeEditMessageText(text, chatId, messageId);
+                registerUser(update.getMessage());
             }
-            else if(callbackData.equals(NO_BUTTON)){
-                String text = "You pressed NO button";
+            else if(callbackData.equals(NO_BUTTON_REG)){
+                String text = "You canceled registration.";
                 executeEditMessageText(text, chatId, messageId);
             }
         }
@@ -145,12 +138,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         var yesButton = new InlineKeyboardButton();
 
         yesButton.setText("Yes");
-        yesButton.setCallbackData(YES_BUTTON);
+        yesButton.setCallbackData(YES_BUTTON_REG);
 
         var noButton = new InlineKeyboardButton();
 
         noButton.setText("No");
-        noButton.setCallbackData(NO_BUTTON);
+        noButton.setCallbackData(NO_BUTTON_REG);
 
         rowInLine.add(yesButton);
         rowInLine.add(noButton);
@@ -165,12 +158,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void registerUser(Message msg) {
 
+        var chatId = msg.getChatId();
+        var chat = msg.getChat();
+        User user = new User();
+
         if(userRepository.findById(msg.getChatId()).isEmpty()){
 
-            var chatId = msg.getChatId();
-            var chat = msg.getChat();
+//            var chatId = msg.getChatId();
+//            var chat = msg.getChat();
 
-            User user = new User();
+//            User user = new User();
 
             user.setChatId(chatId);
             user.setFirstName(chat.getFirstName());
@@ -179,16 +176,30 @@ public class TelegramBot extends TelegramLongPollingBot {
             user.setRegisteredAt(new Timestamp(System.currentTimeMillis()));
 
             userRepository.save(user);
+
+            SendMessage message = new SendMessage();
+            message.setChatId(String.valueOf(chatId));
+            message.setText("You have successfully registered.");
+            executeMessage(message);
+
             log.info("user saved: " + user);
+        } else {
+            SendMessage message = new SendMessage();
+            message.setChatId(String.valueOf(chatId));
+            message.setText("You have already been registered before.");
+            executeMessage(message);
+
+            log.info("Retrying to register a user: " + user);
         }
     }
 
     private void startCommandReceived(long chatId, String name) {
 
-
-        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you!" + " :blush:");
-        log.info("Replied to user " + name);
-
+        String answer = EmojiParser.parseToUnicode(
+                "Привет, " + name + ", это meeting-бот организации ООО \"Норд Диджитал\".\n\n" +
+                "Для регистрации пользователя введите /register.\n\n" +
+                "Type /help to see help message.");
+        log.info("Start user " + name);
 
         sendMessage(chatId, answer);
     }
@@ -198,28 +209,28 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
 
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-
-        List<KeyboardRow> keyboardRows = new ArrayList<>();
-
-        KeyboardRow row = new KeyboardRow();
-
-        row.add("weather");
-        row.add("get random joke");
-
-        keyboardRows.add(row);
-
-        row = new KeyboardRow();
-
-        row.add("register");
-        row.add("check my data");
-        row.add("delete my data");
-
-        keyboardRows.add(row);
-
-        keyboardMarkup.setKeyboard(keyboardRows);
-
-        message.setReplyMarkup(keyboardMarkup);
+//        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+//
+//        List<KeyboardRow> keyboardRows = new ArrayList<>();
+//
+//        KeyboardRow row = new KeyboardRow();
+//
+//        row.add("weather");
+//        row.add("get random joke");
+//
+//        keyboardRows.add(row);
+//
+//        row = new KeyboardRow();
+//
+//        row.add("register");
+//        row.add("check my data");
+//        row.add("delete my data");
+//
+//        keyboardRows.add(row);
+//
+//        keyboardMarkup.setKeyboard(keyboardRows);
+//
+//        message.setReplyMarkup(keyboardMarkup);
 
         executeMessage(message);
     }
